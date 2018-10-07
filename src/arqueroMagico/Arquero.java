@@ -12,9 +12,10 @@ public class Arquero {
 
 	public void dispararAMansalva(Target objetivo, double anguloInicial, double velocidadInicial)
 	{	
-		//Dado un angulo inicial y una velocidada inicial comienza a disparar
-		//Las flechas provistas hasta que se le acaban las flechas.
-		//Aumenta el angulo de disparo en 0.1 por tiro.
+		//Dado un angulo inicial y una velocidada inicial comienza a disparar las
+		//flechas provistas hasta que se le acaban las flechas.
+		//Aumenta el angulo y la velocidad en cada tiro.
+		
 		
 		double anguloX = anguloInicial;
 		double velocidadX = velocidadInicial; // m/s
@@ -88,17 +89,12 @@ public class Arquero {
 				else if((difAlturaAlObjetivo) < -1)
 					anguloX += difAlturaAlObjetivo/(100*4);
 			}			
-			
 			//Muestra el impacto..comentar.
-			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
-				
-		}
-			
-			
+			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));		
+		}		
 	}
 	
-
-
+	
 	public void setearDisparos(Flecha[] flechas) {
 		this.flechas = flechas;
 	}
