@@ -5,7 +5,7 @@ public class mainArquero {
 	public static void main(String[] args) {
 		int disparosAEfectuar = 100;
 		
-		Target target = new Target(4000,20);
+		Target objetivo = new Target(4000,20);
 		Arquero arquero = new Arquero(disparosAEfectuar);
 		Flecha[] flechas = new Flecha[disparosAEfectuar];		
 		
@@ -16,10 +16,10 @@ public class mainArquero {
 		arquero.setearDisparos(flechas);
 		
 		System.out.println("Disparo A Mansalva");
-		arquero.dispararAMansalvaMismaVelocidad(target, 15, 25);
+		arquero.dispararAMansalva(objetivo, 15, 25);
 		
 		System.out.println("Disparos Apuntando");
-		arquero.dispararApuntando(target, 10, 20);
+		arquero.dispararApuntando(objetivo, 20, 15);
 		
 		System.out.println("Cantidad de disparos acertados" + arquero.getImpactosPositivos());
 		
