@@ -6,26 +6,29 @@ public class mainArquero {
 		int disparosAEfectuar = 100;
 		
 		Target objetivo = new Target(4000,20);
-		Arquero arquero = new Arquero(disparosAEfectuar);
-		Flecha[] flechas = new Flecha[disparosAEfectuar];		
+		
+		Arquero arquero1 = new Arquero(disparosAEfectuar);
+		Arquero arquero2 = new Arquero(disparosAEfectuar);
+		
+		Flecha[] flechas1 = new Flecha[disparosAEfectuar];
+		Flecha[] flechas2 = new Flecha[disparosAEfectuar];
 		
 		for (int i=0;i<disparosAEfectuar;i++) {
-			flechas[i] = new Flecha();
+			flechas1[i] = new Flecha();
+			flechas2[i] = new Flecha();
 		}
 		
-		arquero.setearDisparos(flechas);
+		arquero1.setearDisparos(flechas1);
+		arquero2.setearDisparos(flechas2);
 		
-		System.out.println("Disparo A Mansalva");
-		arquero.dispararAMansalva(objetivo, 15, 25);
+		System.out.println("Disparo A Mansalva aumentando");
+		arquero1.dispararAMansalva(objetivo, 15, 25);
 		
 		System.out.println("Disparos Apuntando");
-		arquero.dispararApuntando(objetivo, 20, 15);
+		arquero2.dispararApuntando(objetivo, 20, 15);
 		
-		System.out.println("Cantidad de disparos acertados" + arquero.getImpactosPositivos());
-		
-		//arquero.disparar(target);
-		
-		
+		System.out.println("Arquero1 disparos acertados: " + arquero1.getImpactosPositivos());
+		System.out.println("Arquero2 disparos acertados: " + arquero2.getImpactosPositivos());	
 		
 	}
 

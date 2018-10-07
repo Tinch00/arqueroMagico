@@ -23,19 +23,16 @@ public class Arquero {
 		for (Flecha f:flechas) {
 			f.setAngulo(anguloX);
 			f.setVelInicial(velocidadX);
-			
-			f.calcularCoordenadaFinal(objetivo.getDistancia()); //40metros
-			
-//			System.out.println("Angulo: " + anguloX + "Velocidad: " + velocidadX + "Distancia max: " + f.alcanceMaximo());
-//			System.out.println("y:" + f.getCoordenadaFinal().y + "x:" + f.getCoordenadaFinal().x);
+			f.calcularCoordenadaFinal(objetivo.getDistancia());
 			
 			if (objetivo.impactoPositivo(f.getCoordenadaFinal())){
 				this.impactosPositivos++;
 				
 				//No deberian estar los out, pero queda claro donde pega.
 				System.out.println("ImpactoPositivo: " + impactosPositivos);
-				System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
 			}
+			
+			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
 
 			//aumento la vlocidad y el angulo poco a poco. 1 a la vez.
 			if (contador%2==0)

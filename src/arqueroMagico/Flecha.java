@@ -20,8 +20,8 @@ public class Flecha {
 	public void calcularCoordenadaFinal(double distanciaDisparo) {
 		//Calculo xMax y asigno segun corresponda.
 		if (this.alcanceMaximo() < distanciaDisparo) {
-			this.cFinal.x=alcanceMaximo();
-			this.cFinal.y=-1;
+			this.cFinal.x = alcanceMaximo();
+			this.cFinal.y =- 1;
 			return;
 		}
 		
@@ -44,8 +44,8 @@ public class Flecha {
 	}
 	
 	public double alcanceMaximo() {
-		double aux=Math.toRadians(this.angulo*2);
-		double aux2=Math.pow(this.velInicial, 2);
+		double aux = Math.toRadians(this.angulo*2);
+		double aux2 = Math.pow(this.velInicial, 2);
 		return ((aux2/9.8)*Math.sin(aux))*100;
 	}
 	
