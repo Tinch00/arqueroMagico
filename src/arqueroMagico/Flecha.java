@@ -1,3 +1,5 @@
+package arqueroMagico;
+
 
 public class Flecha {
 	
@@ -13,17 +15,7 @@ public class Flecha {
 		this.velInicial = 0;
 		this.angulo = 0;
 	}
-	
-	//disparar flecha, calculo de tiro oblicuo.
-//	public Coordenada posicionEnFuncionDelTiempo(double tiempo) {
-//		
-//		this.cFinal.y = (this.cInicio.y + velEnEjeY(this.velInicial, this.angulo)*tiempo + (9.8*Math.pow(tiempo, 2))/2);
-//		this.cFinal.x = tiempo * velEnEjeX(this.velInicial, this.angulo);
-//		this.cFinal.z = 0;
-//		
-//		return cFinal;
-//		
-//	}
+
 	
 	public void calcularCoordenadaFinal(double distanciaDisparo) {
 		//Calculo xMax y asigno segun corresponda.
@@ -35,11 +27,13 @@ public class Flecha {
 		
 		this.cFinal.x = distanciaDisparo;
 		
-		//divide y triunfaras:
+		//Divide y triunfaras:
 		//Y en funcion de X. Tiro oblicuo. Sin necesidad del Tiempo:
 		//Y(x) = Tg(Angulo)*x - (gravedad*x²)/(2*VelIni²*Cos²Angulo)
 		//Y(X) =   aux        -      			aux2
 		//Y(X) = 			   		aux22    /    aux23 * aux21
+		//Dado que se tomo a los ejes en Cms, se multipla y divide por 100 segun corresponda
+		//Para que las cuentas den bien con el vlaor de la gravedad.
 		
 		double aux = Math.tan(Math.toRadians(this.angulo)) * (distanciaDisparo/100);
 		double aux21 = Math.pow(Math.cos(Math.toRadians(this.angulo)),2);
@@ -60,12 +54,12 @@ public class Flecha {
 	}
 	
 	//Cambiar, sacar parametros, reemplazar por this.	
-	private double velEnEjeY(double velInicial, double angulo) {
-		return velInicial * Math.sin((double)angulo);
+	private double velEnEjeY() {
+		return this.velInicial * Math.sin(Math.toRadians(this.angulo));
 	}
 	
-	private double velEnEjeX(double velInicial, double angulo) {
-		return velInicial * Math.cos((double)angulo);
+	private double velEnEjeX() {
+		return this.velInicial * Math.cos(Math.toRadians(this.angulo));
 	}
 	
 	public void setVelInicial(double v) {

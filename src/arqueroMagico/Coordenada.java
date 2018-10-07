@@ -1,3 +1,4 @@
+package arqueroMagico;
 
 public class Coordenada {
 	

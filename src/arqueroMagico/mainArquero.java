@@ -1,23 +1,25 @@
+package arqueroMagico;
 
 public class mainArquero {
 	
 	public static void main(String[] args) {
-		int totalDisparos = 100;
+		int disparosAEfectuar = 100;
 		
 		Target target = new Target(4000,20);
-		Arquero arquero = new Arquero(totalDisparos);
-		Flecha[] flechas = new Flecha[totalDisparos];
+		Arquero arquero = new Arquero(disparosAEfectuar);
+		Flecha[] flechas = new Flecha[disparosAEfectuar];		
 		
-		
-		Coordenada coordenadaInicio = new Coordenada(4000,150,0);
-		
-		
-		for (int i=0;i<totalDisparos;i++) {
+		for (int i=0;i<disparosAEfectuar;i++) {
 			flechas[i] = new Flecha();
 		}
 		
 		arquero.setearDisparos(flechas);
+		
+		System.out.println("Disparo A Mansalva");
 		arquero.dispararAMansalvaMismaVelocidad(target, 15, 25);
+		
+		System.out.println("Disparos Apuntando");
+		arquero.dispararApuntando(target, 10, 20);
 		
 		System.out.println("Cantidad de disparos acertados" + arquero.getImpactosPositivos());
 		
