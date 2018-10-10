@@ -1,5 +1,7 @@
 package arqueroMagico;
 
+import java.sql.Time;
+
 public class Arquero {
 	
 	private Flecha[] flechas;
@@ -19,28 +21,36 @@ public class Arquero {
 		
 		double anguloX = anguloInicial;
 		double velocidadX = velocidadInicial; // m/s
-		double contador = 0;
+		double contadorFuerzaBruta = 0;
+		double acumuladoTiempoVuelo = 0;
 		
 		for (Flecha f:flechas) {
+
 			f.setAngulo(anguloX);
 			f.setVelInicial(velocidadX);
 			f.calcularCoordenadaFinal(objetivo.getDistancia());
+			//Le sumo 1 segundo, lo que tarda en acomodar la flecha antes de tirar.
+			acumuladoTiempoVuelo += f.tiempoDeVuelo()+1;
 			
-			if (objetivo.impactoPositivo(f.getCoordenadaFinal())){
+			
+			if (objetivo.impactoPositivo(f.getCoordenadaFinal(),acumuladoTiempoVuelo)){
 				this.impactosPositivos++;
+				return;
 				
-				//No deberian estar los out, pero queda claro donde pega.
-				System.out.println("ImpactoPositivo: " + impactosPositivos);
+				//Para mostrar los impactos.
+				//System.out.println("ImpactoPositivo: " + impactosPositivos);
 			}
 			
 			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
-
+			System.out.println("Tiempo de Vuelo: " + acumuladoTiempoVuelo);
+			
+			
 			//aumento la vlocidad y el angulo poco a poco. 1 a la vez.
-			if (contador%2==0)
+			if (contadorFuerzaBruta%2==0)
 				anguloX += 0.05;
 			else
 				velocidadX += 0.05;
-			contador++;
+			contadorFuerzaBruta++;
 		}
 	}
 	
@@ -51,6 +61,7 @@ public class Arquero {
 		
 		double anguloX = anguloInicial;
 		double velocidadX = velocidadInicial; // m/s
+		double acumuladoTiempoVuelo = 0;
 		
 		for (Flecha f:flechas) {
 			f.setAngulo(anguloX);
@@ -58,11 +69,14 @@ public class Arquero {
 			
 			f.calcularCoordenadaFinal(objetivo.getDistancia()); //40metros
 			
-			if (objetivo.impactoPositivo(f.getCoordenadaFinal())){
+			//Sumo 1 segundo, lo que tarda en acomodar la flecha para volver a tirar.
+			acumuladoTiempoVuelo += f.tiempoDeVuelo() + 1;
+			
+			if (objetivo.impactoPositivo(f.getCoordenadaFinal(),acumuladoTiempoVuelo)){
 				this.impactosPositivos++;
 				
 				//No deberian estar los out, pero queda claro donde pega.
-				System.out.println("ImpactoPositivo: " + impactosPositivos);
+				//System.out.println("ImpactoPositivo: " + impactosPositivos);
 			}	
 			
 			if (!objetivo.impactoExacto(f.getCoordenadaFinal())){
@@ -89,8 +103,9 @@ public class Arquero {
 				else if((difAlturaAlObjetivo) < -1)
 					anguloX += difAlturaAlObjetivo/(100*4);
 			}			
-			//Muestra el impacto..comentar.
-			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));		
+			//Muestra los tiros
+			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
+			System.out.println("Tiempo de Vuelo: " + acumuladoTiempoVuelo);
 		}		
 	}
 	

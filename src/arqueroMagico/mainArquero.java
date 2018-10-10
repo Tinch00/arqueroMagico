@@ -22,13 +22,14 @@ public class mainArquero {
 		arquero2.setearDisparos(flechas2);
 		
 		System.out.println("Disparo A Mansalva aumentando");
-		arquero1.dispararAMansalva(objetivo, 15, 25);
+		arquero1.dispararAMansalva(objetivo, 20	, 25);
 		
-		System.out.println("Disparos Apuntando");
-		arquero2.dispararApuntando(objetivo, 20, 15);
 		
+//		System.out.println("Disparos Apuntando");
+//		arquero2.dispararApuntando(objetivo, 20, 15);
+//		
 		System.out.println("Arquero1 disparos acertados: " + arquero1.getImpactosPositivos());
-		System.out.println("Arquero2 disparos acertados: " + arquero2.getImpactosPositivos());	
+//		System.out.println("Arquero2 disparos acertados: " + arquero2.getImpactosPositivos());	
 		
 	}
 

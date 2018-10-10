@@ -49,6 +49,10 @@ public class Flecha {
 		return ((aux2/9.8)*Math.sin(aux))*100;
 	}
 	
+	public double tiempoDeVuelo() {
+		return (this.cFinal.x/100)/velEnEjeX();
+	}
+	
 	public double tiempoVuelo() {
 		return ((2*this.velInicial)/9.8);
 	}
