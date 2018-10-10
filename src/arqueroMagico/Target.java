@@ -2,10 +2,11 @@ package arqueroMagico;
 
 public class Target {
 	
-	private Coordenada posicion;
-	private int ancho;
-	private double longitudCuerda;
-	private double periodo;
+	private Coordenada posicion;   		// (cm, cm, cm)
+	private int ancho;					// cm
+	private double longitudCuerda; 		// cm
+	private double periodo;				// s
+	private double anguloDeMovimiento;  // grados
 	
 	
 	public Target(double distanciaArquero, int ancho) {
@@ -18,9 +19,10 @@ public class Target {
 		//3Metros ==> 300 cms
 		this.longitudCuerda = 300;
 		this.periodo = calculoPeriodo();
+		this.anguloDeMovimiento = 20;
 	}
 	
-	private double calculoPeriodo() {
+	public double calculoPeriodo() {
 		//El periodo del péndulo simple es el tiempo que tarda el péndulo en volver a pasar 
 		//por un punto en el mismo sentido.
 		//También se define como el tiempo que tarda en hacerse una oscilación completa.
@@ -28,26 +30,33 @@ public class Target {
 		return (2*Math.PI)*Math.sqrt((this.longitudCuerda/100)/9.8);
 	}
 	
-
-	//Reformular para incorporar el tiempo:	
+	public double centroTargetEnFuncionDelTiempo(double tiempo) {
+		//Calculos del Mov Armonico Simple.
+		double velAngular = Math.sqrt(9.8/(this.longitudCuerda/100));
+		return (((Math.toRadians(this.anguloDeMovimiento)*(this.longitudCuerda/100))*Math.sin(Math.toRadians(velAngular*tiempo)))*100);
+	}
+	
 	boolean impactoPositivo(Coordenada coordenadaImpacto, double tiempoLlegadaFlecha) {
 		//Verificar que la coordenada de impacto de la flecha en el ejeX sea >= a distancia target.
 		//Es decir, que no se haya quedado corta.
 		if(coordenadaImpacto.x < this.posicion.x)
 			return false;
 		
-		//Conociendo el Periodo del pendulo, se sabe que el pendulo pasará por el eje z == 0 cuando
-		//el periodo sea tiempo=T1/4 y tiempo=T3/4.
-		//Por esto mismo, si la flecha pasa en algun multiplo de T/4 o T*3/4, existe probabilidad de impacto. 
-		if (tiempoLlegadaFlecha % (this.periodo/4) < 0.1 || tiempoLlegadaFlecha % (this.periodo*3/4) < 0.1) {
-			//Dio en el centro. Muy poco probable.
-			if (impactoExacto(coordenadaImpacto))
-				return true;
-			
-			if (coordenadaImpacto.y < this.posicion.y + (ancho/2) && coordenadaImpacto.y > this.posicion.y - (ancho/2))
-				return true;
-		}
+		this.posicion.z = centroTargetEnFuncionDelTiempo(tiempoLlegadaFlecha);
 		
+		if(this.posicion.z < 0) {
+			//El target se encuentra a la izquerda de la posicion de equilibrio
+			if (coordenadaImpacto.z > this.posicion.z && coordenadaImpacto.z < (this.posicion.z + this.ancho/2)) {
+				if (coordenadaImpacto.y < this.posicion.y + (ancho/2) && coordenadaImpacto.y > this.posicion.y - (ancho/2))
+					return true;
+			}
+		}else {
+			//El target se encuentra a la derecha de la posicion de equilibrio.
+			if(coordenadaImpacto.z < this.posicion.z && coordenadaImpacto.z > (this.posicion.z - this.ancho/2)){
+				if (coordenadaImpacto.y < this.posicion.y + (ancho/2) && coordenadaImpacto.y > this.posicion.y - (ancho/2))
+					return true;
+			}
+		}
 		return false;
 	}
 	
@@ -62,8 +71,8 @@ public class Target {
 		return this.posicion.x;
 	}
 	
-	public double getAltura() {
-		return this.posicion.y;	
+	public Coordenada getCoordenadaTarget() {
+		return this.posicion;
 	}
 
 	

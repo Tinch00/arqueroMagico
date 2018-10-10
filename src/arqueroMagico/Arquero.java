@@ -1,15 +1,15 @@
 package arqueroMagico;
 
-import java.sql.Time;
-
 public class Arquero {
 	
 	private Flecha[] flechas;
 	private int impactosPositivos;
+	private Flecha flechaImpacto;
 	
 	public Arquero(int cantidadDisparos) {
 		this.flechas = new Flecha[cantidadDisparos];
 		this.impactosPositivos = 0;
+		this.flechaImpacto= null;
 	}
 
 	public void dispararAMansalva(Target objetivo, double anguloInicial, double velocidadInicial)
@@ -18,100 +18,126 @@ public class Arquero {
 		//flechas provistas hasta que se le acaban las flechas.
 		//Aumenta el angulo y la velocidad en cada tiro.
 		
-		
-		double anguloX = anguloInicial;
-		double velocidadX = velocidadInicial; // m/s
-		double contadorFuerzaBruta = 0;
-		double acumuladoTiempoVuelo = 0;
+		double anguloX = anguloInicial; 		//grados
+		double velocidadX = velocidadInicial;	// m/s
+		double acumuladoTiempoVuelo = 0; 		//s - Para verificar en que posicion se encuentra el objetivo.
+		double tiempoAcomodarFlecha = 1; 		//s
+		double contadorFuerzaBruta = 0; 		//para variar el aumento entre velocidad y angulo.
 		
 		for (Flecha f:flechas) {
 
 			f.setAngulo(anguloX);
 			f.setVelInicial(velocidadX);
 			f.calcularCoordenadaFinal(objetivo.getDistancia());
-			//Le sumo 1 segundo, lo que tarda en acomodar la flecha antes de tirar.
-			acumuladoTiempoVuelo += f.tiempoDeVuelo()+1;
+			
+			acumuladoTiempoVuelo += f.tiempoDeVuelo() + tiempoAcomodarFlecha;
 			
 			
 			if (objetivo.impactoPositivo(f.getCoordenadaFinal(),acumuladoTiempoVuelo)){
 				this.impactosPositivos++;
+				this.flechaImpacto = f;
+//				System.out.println("Impacto positivo");
+			
 				return;
-				
-				//Para mostrar los impactos.
-				//System.out.println("ImpactoPositivo: " + impactosPositivos);
 			}
 			
-			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
-			System.out.println("Tiempo de Vuelo: " + acumuladoTiempoVuelo);
-			
-			
-			//aumento la vlocidad y el angulo poco a poco. 1 a la vez.
-			if (contadorFuerzaBruta%2==0)
-				anguloX += 0.05;
-			else
-				velocidadX += 0.05;
+			//aumento la velocidad y el angulo poco a poco. 1 a la vez.
+			if (contadorFuerzaBruta < 30 && f.getCoordenadaFinal().x < 4000)
+				anguloX += 0.5;
+			else {
+				if (f.getCoordenadaFinal().y > 90 && f.getCoordenadaFinal().y < 110)
+					//Incrementa la velocidad de manera random pero progrsivamente.
+					//Si ya e encuentra entre los valores deseaos, la velocidad es random tambien
+					//pero no se va del area de impacto.
+					velocidadX += Math.random() * (0.05 - (-0.04)) - 0.04;
+				else if (f.getCoordenadaFinal().y > 110 )
+					velocidadX += -(Math.random()*(0.05));
+				else if (f.getCoordenadaFinal().y < 90)
+					velocidadX += Math.random()*0.05;
+			}
 			contadorFuerzaBruta++;
+//			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
+//			System.out.println(objetivo.centroTargetEnFuncionDelTiempo(acumuladoTiempoVuelo));
 		}
 	}
 	
 	public void dispararApuntando(Target objetivo, double anguloInicial, double velocidadInicial) {
 		//Dispara primera flecha con los parametros iniciales.
-		//Verifica si se no alcanzó la distancia del objetivo -->Ajusta la Velocidad.
-		//Luego, si le erro al objetivo --> ajusta el angulo.
+		//Verifica si se no alcanzó la distancia del objetivo -->Aumenta la Velocidad.
+		//Luego, si le erro al objetivo --> Ajusta el angulo.
+		//Finalmente, si sigue errando, aumenta el tiempo de disparo entre flecha y flecha.
 		
-		double anguloX = anguloInicial;
-		double velocidadX = velocidadInicial; // m/s
-		double acumuladoTiempoVuelo = 0;
+		double anguloX = anguloInicial;			// grados
+		double velocidadX = velocidadInicial; 	// m/s
+		double acumuladoTiempoVuelo = 0;		//s - Para verificar en que posicion se encuentra el objetivo.
+		double tiempoAcomodarFlecha = 1;		// s
 		
 		for (Flecha f:flechas) {
 			f.setAngulo(anguloX);
 			f.setVelInicial(velocidadX);
 			
-			f.calcularCoordenadaFinal(objetivo.getDistancia()); //40metros
+			f.calcularCoordenadaFinal(objetivo.getDistancia());
 			
-			//Sumo 1 segundo, lo que tarda en acomodar la flecha para volver a tirar.
-			acumuladoTiempoVuelo += f.tiempoDeVuelo() + 1;
+			acumuladoTiempoVuelo += f.tiempoDeVuelo() + tiempoAcomodarFlecha;
 			
 			if (objetivo.impactoPositivo(f.getCoordenadaFinal(),acumuladoTiempoVuelo)){
 				this.impactosPositivos++;
-				
-				//No deberian estar los out, pero queda claro donde pega.
-				//System.out.println("ImpactoPositivo: " + impactosPositivos);
+				this.flechaImpacto = f;
+				return;
 			}	
 			
 			if (!objetivo.impactoExacto(f.getCoordenadaFinal())){
 				//Dado que el mas minimo cambio de angulo o velocidad afecta mucho al impacto,
 				//se ajusta el angulo y la velocidad dividiendo por 4
 				
-				
+				//Ajuste de Velocidad:
 				//Me voy acercando ajustando la velocidad incial en base a cuan lejos esta del eje X.
 				double difDistanciaAlObjetivo = objetivo.getDistancia() - f.getCoordenadaFinal().x;
-				//El objetivo esta más lejos:
+				
+				//No llegué al objetivo. Me falta al menos 1 metro.
 				if (difDistanciaAlObjetivo > 100)
 					velocidadX += difDistanciaAlObjetivo/(100*4);
-				//El objetivo esta mas cerca.
+				//Me pasé del objetivo por mucho. Me pasé por mas de 1 metro.
 				else if((difDistanciaAlObjetivo) < -100)
 					velocidadX += difDistanciaAlObjetivo/(100*4);
 
-				
+				//Ajuste de tiempo:
 				//Me acerco calculando el angulo en base a cuan lejos esta del eje Y.
-				double difAlturaAlObjetivo = objetivo.getAltura() - f.getCoordenadaFinal().y;
+				double difAlturaAlObjetivo = objetivo.getCoordenadaTarget().y - f.getCoordenadaFinal().y;
+				
 				//EL objetivo esta mas arriba: 
 				if (difAlturaAlObjetivo > 1)
 					anguloX += difAlturaAlObjetivo/(100*4);
 				//El objetivo esta mas abajo:
 				else if((difAlturaAlObjetivo) < -1)
 					anguloX += difAlturaAlObjetivo/(100*4);
+				
+				//Ajusta por tiempo y eje Z del objetivo.
+				double difTiempoObjetivo = objetivo.getCoordenadaTarget().z - f.getCoordenadaFinal().z;
+				
+				if(difTiempoObjetivo < 30 && this.impactosPositivos < 0)
+					tiempoAcomodarFlecha += objetivo.calculoPeriodo() *3/5;
+				else if(difTiempoObjetivo >30 && this.impactosPositivos < 0)
+					tiempoAcomodarFlecha += objetivo.calculoPeriodo()/4;
+				
+					
 			}			
 			//Muestra los tiros
-			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
-			System.out.println("Tiempo de Vuelo: " + acumuladoTiempoVuelo);
-		}		
+//			System.out.println("X: " + f.getCoordenadaFinal().x + "Y: " + Math.round(f.getCoordenadaFinal().y));
+//			System.out.println("posicion flecha Z" + f.getCoordenadaFinal().z);
+		}
+		
 	}
+	
+	
 	
 	
 	public void setearDisparos(Flecha[] flechas) {
 		this.flechas = flechas;
+	}
+	
+	public Flecha getFlechaImpacto() {
+		return this.flechaImpacto;
 	}
 	
 	public int getImpactosPositivos() {

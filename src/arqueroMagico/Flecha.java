@@ -3,13 +3,11 @@ package arqueroMagico;
 
 public class Flecha {
 	
-	//private Coordenada cInicio;
 	private Coordenada cFinal;
-	private double velInicial;
-	private double angulo;
+	private double velInicial;  //m/s
+	private double angulo;		//Grados.
 
-	//public Flecha(Coordenada cI) {
-		//this.cInicio = new Coordenada(cI.x, cI.y, cI.z);
+
 	public Flecha() {
 		this.cFinal = new Coordenada(0,0,0);
 		this.velInicial = 0;
@@ -18,16 +16,17 @@ public class Flecha {
 
 	
 	public void calcularCoordenadaFinal(double distanciaDisparo) {
-		//Calculo xMax y asigno segun corresponda.
+		//Calculo alcance Maximo y asigno segun corresponda.
 		if (this.alcanceMaximo() < distanciaDisparo) {
 			this.cFinal.x = alcanceMaximo();
-			this.cFinal.y =- 1;
+			this.cFinal.y =- 1; //Si no llega al target, pega en el piso.
 			return;
 		}
 		
 		this.cFinal.x = distanciaDisparo;
 		
-		//Divide y triunfaras:
+		//Utilizando la formula de Tiro Oblicuo:
+		//Se puede hacer de muchas maneras. Elegi la peor:
 		//Y en funcion de X. Tiro oblicuo. Sin necesidad del Tiempo:
 		//Y(x) = Tg(Angulo)*x - (gravedad*x²)/(2*VelIni²*Cos²Angulo)
 		//Y(X) =   aux        -      			aux2
@@ -44,6 +43,8 @@ public class Flecha {
 	}
 	
 	public double alcanceMaximo() {
+		
+		//Mas formulas de TO.
 		double aux = Math.toRadians(this.angulo*2);
 		double aux2 = Math.pow(this.velInicial, 2);
 		return ((aux2/9.8)*Math.sin(aux))*100;
@@ -57,7 +58,6 @@ public class Flecha {
 		return ((2*this.velInicial)/9.8);
 	}
 	
-	//Cambiar, sacar parametros, reemplazar por this.	
 	private double velEnEjeY() {
 		return this.velInicial * Math.sin(Math.toRadians(this.angulo));
 	}
@@ -77,7 +77,5 @@ public class Flecha {
 	public Coordenada getCoordenadaFinal() {
 		return cFinal;
 	}
-	
-	
 
 }
